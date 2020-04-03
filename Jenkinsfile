@@ -91,7 +91,7 @@ spec:
     DEVCLOUD_DOCKER_TAG = "${DEVCLOUD_REGISTRY_ADDRESS}/${GITHUB_PROJECT}:${APPLICATION_MAJOR_VERSION}.${APPLICATION_MINOR_VERSION}.${env.BUILD_NUMBER}"
     DEVCLOUD_BRANCH_TAG = "master"
     MATTERMOST_CHANNEL = "vaughn-redcloud3-spring-petclinic"
-    MATTERMOST_WEBHOOK = "https://mattermost.mgt.vaughn.perspectatechdemos.com/hooks/o9ankbitxfr1ipafn5iq6wf5mh"
+    MATTERMOST_WEBHOOK = "https://mattermost.mgt.vaughn.perspectatechdemos.com/hooks/7xdiefkhapn88ycxb9quemdhah"
     ARTIFACTORY_URL = "https://artifactory.mgt.vaughn.perspectatechdemos.com"
     NEXUS_ARTIFACT_URL = "https://nexus.mgt.vaughn.perspectatechdemos.com/#browse/search/docker"
     SONARQUBE_URL = "https://sonarqube.mgt.vaughn.perspectatechdemos.com"
