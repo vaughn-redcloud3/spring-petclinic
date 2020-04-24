@@ -75,16 +75,16 @@ items:
     annotations:
       haproxy.router.openshift.io/timeout: 11m
     labels:
-      app: __PROJECT__-vaughn-redcloud3-spring-petclinic
-    name: __PROJECT__-vaughn-redcloud3-spring-petclinic
+      app: __PROJECT__-vaughn-redcloud3-spring-petclinic-__BRANCH__
+    name: __PROJECT__-vaughn-redcloud3-spring-petclinic-__BRANCH__
     namespace: istio-system
   spec:
     tls:
     - hosts:
-      - "vaughn-redcloud3-spring-petclinic.__PROJECT__.vaughn.perspectatechdemos.com"
+      - "vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.vaughn.perspectatechdemos.com"
       secretName: "vaughn-perspectatechdemos-com-crt"
     rules:
-    - host: vaughn-redcloud3-spring-petclinic.__PROJECT__.vaughn.perspectatechdemos.com
+    - host: vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.vaughn.perspectatechdemos.com
       http:
         paths:
         - path: /
@@ -99,7 +99,7 @@ items:
     namespace: __PROJECT__
   spec:
     hosts:
-    - "vaughn-redcloud3-spring-petclinic.__PROJECT__.vaughn.perspectatechdemos.com"
+    - "vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.vaughn.perspectatechdemos.com"
     gateways:
     - __PROJECT__-istio-gateway
     http:
