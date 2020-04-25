@@ -8,28 +8,28 @@ items:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: vaughn-redcloud3-spring-petclinic
-      chart: vaughn-redcloud3-spring-petclinic-0.0.1
+      app: vaughn-redcloud3-spring-petclinic-__BRANCH__
+      chart: vaughn-redcloud3-spring-petclinic-__BRANCH__-0.0.1
       heritage: Tiller
-      release: vaughn-redcloud3-spring-petclinic
-    name: vaughn-redcloud3-spring-petclinic
+      release: vaughn-redcloud3-spring-petclinic-__BRANCH__
+    name: vaughn-redcloud3-spring-petclinic-__BRANCH__
     namespace: __PROJECT__
   spec:
     replicas: 1
     selector:
-      deploymentconfig: vaughn-redcloud3-spring-petclinic
+      deploymentconfig: vaughn-redcloud3-spring-petclinic-__BRANCH__
     template:
       metadata:
         labels:
-          app: vaughn-redcloud3-spring-petclinic
-          release: vaughn-redcloud3-spring-petclinic
-          deploymentconfig: vaughn-redcloud3-spring-petclinic
+          app: vaughn-redcloud3-spring-petclinic-__BRANCH__
+          release: vaughn-redcloud3-spring-petclinic-__BRANCH__
+          deploymentconfig: vaughn-redcloud3-spring-petclinic-__BRANCH__
           version: v1
       spec:
         imagePullSecrets:
         - name: docker-registry-credentials
         containers:
-          - name: vaughn-redcloud3-spring-petclinic
+          - name: vaughn-redcloud3-spring-petclinic-__BRANCH__
             image: "__IMAGE_TAG__"
             imagePullPolicy: "Always"
             ports:
@@ -51,12 +51,12 @@ items:
   kind: Service
   metadata:
     labels:
-      app: vaughn-redcloud3-spring-petclinic
-      chart: vaughn-redcloud3-spring-petclinic-0.0.1
+      app: vaughn-redcloud3-spring-petclinic-__BRANCH__
+      chart: vaughn-redcloud3-spring-petclinic-__BRANCH__-0.0.1
       heritage: Tiller
-      release: vaughn-redcloud3-spring-petclinic
+      release: vaughn-redcloud3-spring-petclinic-__BRANCH__
       version: v1
-    name: vaughn-redcloud3-spring-petclinic
+    name: vaughn-redcloud3-spring-petclinic-__BRANCH__
     namespace: __PROJECT__
   spec:
     type: "ClusterIP"
@@ -66,8 +66,8 @@ items:
         protocol: TCP
         targetPort: 8080
     selector:
-      app: vaughn-redcloud3-spring-petclinic
-      release: vaughn-redcloud3-spring-petclinic
+      app: vaughn-redcloud3-spring-petclinic-__BRANCH__
+      release: vaughn-redcloud3-spring-petclinic-__BRANCH__
 
 - apiVersion: extensions/v1beta1
   kind: Ingress
@@ -95,7 +95,7 @@ items:
 - apiVersion: networking.istio.io/v1alpha3
   kind: VirtualService
   metadata:
-    name: vaughn-redcloud3-spring-petclinic
+    name: vaughn-redcloud3-spring-petclinic-__BRANCH__
     namespace: __PROJECT__
   spec:
     hosts:
@@ -108,17 +108,17 @@ items:
           prefix: /
       route:
       - destination:
-          host: vaughn-redcloud3-spring-petclinic
+          host: vaughn-redcloud3-spring-petclinic-__BRANCH__
           port:
             number: 80
 
 - apiVersion: networking.istio.io/v1alpha3
   kind: DestinationRule
   metadata:
-    name: vaughn-redcloud3-spring-petclinic
+    name: vaughn-redcloud3-spring-petclinic-__BRANCH__
     namespace: __PROJECT__
   spec:
-    host: vaughn-redcloud3-spring-petclinic
+    host: vaughn-redcloud3-spring-petclinic-__BRANCH__
     subsets:
     - name: v1
       labels:
