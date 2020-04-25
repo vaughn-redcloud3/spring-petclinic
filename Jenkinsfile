@@ -152,7 +152,8 @@ spec:
       steps {
         container('maven') {
           timeout(time: 10, unit: 'MINUTES') {
-              waitForQualityGate abortPipeline: false
+              sh "date"
+              // waitForQualityGate abortPipeline: false
             }
         }
         mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nQuality Gate: ${SONARQUBE_URL}/dashboard?id=${GITHUB_GROUP}-${GITHUB_PROJECT}"
