@@ -182,7 +182,7 @@ spec:
             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'vaughn-redcloud3-token', url: "${GITHUB_PROJECT_URL}.git"]]]
             sh "cd /usr/local/bin && wget https://redcloud3.s3.amazonaws.com/tools/oc-4.3.2-linux.tar.gz && tar -xvf oc-4.3.2-linux.tar.gz"
           dir('.') {
-            sh "sed 's#__BRANCH__#${BRANCH}#g' springboot.yaml > branch-springboot-dev.yaml"
+            sh "sed 's#__BRANCH__#${BRANCH_NAME}#g' springboot.yaml > branch-springboot-dev.yaml"
             sh "sed 's#__PROJECT__#dev#g' branch-springboot-dev.yaml > springboot-dev.yaml"
             sh "sed -i 's#__IMAGE_TAG__#${DEVCLOUD_DOCKER_TAG}#' springboot-dev.yaml"
             sh "cat springboot-dev.yaml"
@@ -225,7 +225,7 @@ spec:
       steps {
         container('ubuntu') {
           dir('.') {
-            sh "sed 's#__BRANCH__#${BRANCH}#g' springboot.yaml > branch-springboot-test.yaml"
+            sh "sed 's#__BRANCH__#${BRANCH_NAME}#g' springboot.yaml > branch-springboot-test.yaml"
             sh "sed 's#__PROJECT__#test#g' branch-springboot-test.yaml > springboot-test.yaml"
             sh "sed -i 's#__IMAGE_TAG__#${DEVCLOUD_DOCKER_TAG}#' springboot-test.yaml"
             sh "cat springboot-test.yaml"
@@ -247,7 +247,7 @@ spec:
       steps {
         container('ubuntu') {
           dir('.') {
-            sh "sed 's#__BRANCH__#${BRANCH}#g' springboot.yaml > branch-springboot-prod.yaml"
+            sh "sed 's#__BRANCH__#${BRANCH_NAME}#g' springboot.yaml > branch-springboot-prod.yaml"
             sh "sed 's#__PROJECT__#prod#g' branch-springboot-prod.yaml > springboot-prod.yaml"
             sh "sed -i 's#__IMAGE_TAG__#${DEVCLOUD_DOCKER_TAG}#' springboot-prod.yaml"
             sh "cat springboot-prod.yaml"
