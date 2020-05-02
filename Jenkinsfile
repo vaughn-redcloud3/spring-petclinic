@@ -13,7 +13,19 @@ metadata:
 spec:
   serviceAccountName: jenkins
   containers:
-  - name: kaniko
+  - name: kaniko-nexus
+    image: gcr.io/kaniko-project/executor:debug-v0.17.1
+    imagePullPolicy: Always
+    command:
+    - /busybox/sh
+    - "-c"
+    args:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /kaniko/.docker
+  - name: kaniko-quay
     image: gcr.io/kaniko-project/executor:debug-v0.17.1
     imagePullPolicy: Always
     command:
@@ -89,9 +101,10 @@ spec:
     APPLICATION_MAJOR_VERSION = "1"
     APPLICATION_MINOR_VERSION = "0"
     DEVCLOUD_DOCKER_TAG = "${DEVCLOUD_REGISTRY_ADDRESS}/${GITHUB_PROJECT}-${BRANCH_NAME}:${APPLICATION_MAJOR_VERSION}.${APPLICATION_MINOR_VERSION}.${env.BUILD_NUMBER}"
+    QUAY_DOCKER_TAG = "${QUAY_REGISTRY_ADDRESS}/quay/${GITHUB_PROJECT}-${BRANCH_NAME}:${APPLICATION_MAJOR_VERSION}.${APPLICATION_MINOR_VERSION}.${env.BUILD_NUMBER}"
     DEVCLOUD_BRANCH_TAG = "master"
     MATTERMOST_CHANNEL = "vaughn-redcloud3-spring-petclinic"
-    MATTERMOST_WEBHOOK = "https://mattermost.mgt.vaughn.perspectatechdemos.com/hooks/f1ddyju6gbfmp8nsc7bhborrka"
+    MATTERMOST_WEBHOOK = "https://mattermost.mgt.vaughn.perspectatechdemos.com/hooks/dgfqtbh64by73bb96a5jja3woo"
     ARTIFACTORY_URL = "https://artifactory.mgt.vaughn.perspectatechdemos.com"
     NEXUS_ARTIFACT_URL = "https://nexus.mgt.vaughn.perspectatechdemos.com/#browse/search/docker"
     SONARQUBE_URL = "https://sonarqube.mgt.vaughn.perspectatechdemos.com"
@@ -159,14 +172,32 @@ spec:
         mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nQuality Gate: ${SONARQUBE_URL}/dashboard?id=${GITHUB_GROUP}-${GITHUB_PROJECT}"
       }
     }    
-    stage('Package') {
+    stage('Package Image') {
       steps {
-        container(name: 'kaniko', shell: '/busybox/sh') {
+        container(name: 'kaniko-nexus', shell: '/busybox/sh') {
           dir('.') {
             withEnv(['PATH+EXTRA=/busybox']) {
               retry(3) {
+
               sh '''#!/busybox/sh
               /kaniko/executor --whitelist-var-run --context `pwd` --destination ${DEVCLOUD_DOCKER_TAG}
+              '''
+            }
+          }
+        }
+        }
+        mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nArtifact: ${NEXUS_ARTIFACT_URL}"
+      }
+    }
+    stage('Scan Image') {
+      steps {
+        container(name: 'kaniko-quay', shell: '/busybox/sh') {
+          dir('.') {
+            withEnv(['PATH+EXTRA=/busybox']) {
+              retry(3) {
+
+              sh '''#!/busybox/sh
+              /kaniko/executor --whitelist-var-run --context `pwd` --destination ${QUAY_DOCKER_TAG}
               '''
             }
           }
