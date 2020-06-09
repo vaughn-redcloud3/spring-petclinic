@@ -96,24 +96,24 @@ spec:
     GITHUB_GROUP = "vaughn-redcloud3"
     GITHUB_PROJECT = "spring-petclinic"
     GITHUB_PROJECT_URL = "https://github.com/vaughn-redcloud3/spring-petclinic"
-    DEVCLOUD_REGISTRY_ADDRESS = "docker-nexus.mgt.green.perspectatechdemos.com"
-    QUAY_REGISTRY_ADDRESS = "quay-quay-enterprise.apps.green.perspectatechdemos.com"
+    DEVCLOUD_REGISTRY_ADDRESS = "docker-nexus.mgt.vaughn.perspectatechdemos.com"
+    QUAY_REGISTRY_ADDRESS = "quay-quay-enterprise.apps.vaughn.perspectatechdemos.com"
     APPLICATION_MAJOR_VERSION = "1"
     APPLICATION_MINOR_VERSION = "0"
     DEVCLOUD_DOCKER_TAG = "${DEVCLOUD_REGISTRY_ADDRESS}/${GITHUB_PROJECT}-${BRANCH_NAME}:${APPLICATION_MAJOR_VERSION}.${APPLICATION_MINOR_VERSION}.${env.BUILD_NUMBER}"
     QUAY_DOCKER_TAG = "${QUAY_REGISTRY_ADDRESS}/quay/${GITHUB_PROJECT}-${BRANCH_NAME}:${APPLICATION_MAJOR_VERSION}.${APPLICATION_MINOR_VERSION}.${env.BUILD_NUMBER}"
     DEVCLOUD_BRANCH_TAG = "master"
     MATTERMOST_CHANNEL = "vaughn-redcloud3-spring-petclinic"
-    MATTERMOST_WEBHOOK = "https://mattermost.mgt.green.perspectatechdemos.com/hooks/kt4bhwa7zbnr3fhg6spkg3xjwc"
-    ARTIFACTORY_URL = "https://artifactory.mgt.green.perspectatechdemos.com"
-    NEXUS_ARTIFACT_URL = "https://nexus.mgt.green.perspectatechdemos.com/#browse/search/docker"
-    SONARQUBE_URL = "https://sonarqube.mgt.green.perspectatechdemos.com"
+    MATTERMOST_WEBHOOK = "https://mattermost.mgt.vaughn.perspectatechdemos.com/hooks/azjtgi6bp7g4mngbciefz7qsmr"
+    ARTIFACTORY_URL = "https://artifactory.mgt.vaughn.perspectatechdemos.com"
+    NEXUS_ARTIFACT_URL = "https://nexus.mgt.vaughn.perspectatechdemos.com/#browse/search/docker"
+    SONARQUBE_URL = "https://sonarqube.mgt.vaughn.perspectatechdemos.com"
     // we set this for now as there is some weirdness related to BUILD_URL env variable
     // definitely not best practice
-    BUILD_URL = "https://jenkins.mgt.green.perspectatechdemos.com/job/vaughn-redcloud3/job/spring-petclinic/job/${BRANCH_NAME}/${BUILD_NUMBER}"
-    DEV_DEPLOYMENT_URL = "https://vaughn-redcloud3-spring-petclinic-${BRANCH_NAME}.dev.green.perspectatechdemos.com"
-    TEST_DEPLOYMENT_URL = "https://vaughn-redcloud3-spring-petclinic-${BRANCH_NAME}.test.green.perspectatechdemos.com"
-    PROD_DEPLOYMENT_URL = "https://vaughn-redcloud3-spring-petclinic-${BRANCH_NAME}.prod.green.perspectatechdemos.com"
+    BUILD_URL = "https://jenkins.mgt.vaughn.perspectatechdemos.com/job/vaughn-redcloud3/job/spring-petclinic/job/${BRANCH_NAME}/${BUILD_NUMBER}"
+    DEV_DEPLOYMENT_URL = "https://vaughn-redcloud3-spring-petclinic-${BRANCH_NAME}.dev.vaughn.perspectatechdemos.com"
+    TEST_DEPLOYMENT_URL = "https://vaughn-redcloud3-spring-petclinic-${BRANCH_NAME}.test.vaughn.perspectatechdemos.com"
+    PROD_DEPLOYMENT_URL = "https://vaughn-redcloud3-spring-petclinic-${BRANCH_NAME}.prod.vaughn.perspectatechdemos.com"
     REPOSITORY_SOURCE_FOLDER = "."
   }
 
@@ -189,29 +189,12 @@ spec:
         mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nArtifact: ${NEXUS_ARTIFACT_URL}"
       }
     }
-    stage('Scan Image') {
-      steps {
-        container(name: 'kaniko-quay', shell: '/busybox/sh') {
-          dir('.') {
-            withEnv(['PATH+EXTRA=/busybox']) {
-              retry(3) {
-
-              sh '''#!/busybox/sh
-              /kaniko/executor --whitelist-var-run --context `pwd` --destination ${QUAY_DOCKER_TAG}
-              '''
-            }
-          }
-        }
-        }
-        mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nArtifact: ${NEXUS_ARTIFACT_URL}"
-      }
-    }
     stage('Deploy Dev') {
       steps {
         container('ubuntu') {
             sh "apt update -y && apt-get install wget git -y"
             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'vaughn-redcloud3-token', url: "${GITHUB_PROJECT_URL}.git"]]]
-            sh "cd /usr/local/bin && wget https://redcloud3.s3.amazonaws.com/tools/oc-4.3.2-linux.tar.gz && tar -xvf oc-4.3.2-linux.tar.gz"
+            sh "cd /usr/local/bin && wget https://redcloud3-static.s3.amazonaws.com/oc-4.3.2-linux.tar.gz && tar -xvf oc-4.3.2-linux.tar.gz"
           dir('.') {
             sh "sed 's#__BRANCH__#${BRANCH_NAME}#g' springboot.yaml > branch-springboot-dev.yaml"
             sh "sed 's#__PROJECT__#dev#g' branch-springboot-dev.yaml > springboot-dev.yaml"
