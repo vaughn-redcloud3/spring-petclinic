@@ -81,10 +81,10 @@ items:
   spec:
     tls:
     - hosts:
-      - "vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.green.perspectatechdemos.com"
-      secretName: "green-perspectatechdemos-com-crt"
+      - "vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.vaughn.perspectatechdemos.com"
+      secretName: "vaughn-perspectatechdemos-com-crt"
     rules:
-    - host: vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.green.perspectatechdemos.com
+    - host: vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.vaughn.perspectatechdemos.com
       http:
         paths:
         - path: /
@@ -99,7 +99,7 @@ items:
     namespace: __PROJECT__
   spec:
     hosts:
-    - "vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.green.perspectatechdemos.com"
+    - "vaughn-redcloud3-spring-petclinic-__BRANCH__.__PROJECT__.vaughn.perspectatechdemos.com"
     gateways:
     - __PROJECT__-istio-gateway
     http:
